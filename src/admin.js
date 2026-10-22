@@ -1,10 +1,10 @@
-import { listMembers, setMemberRole, setMemberStatus } from './supabase.js';
+import { createEpisode, listMembers, setMemberRole, setMemberStatus } from './supabase.js';
 import { avatarMarkup, escapeAttr, escapeHtml, roleLabel, showInlineAlert, statusMarkup } from './ui.js';
 
 let members = [];
 let adminProfile = null;
 
-const ROLE_OPTIONS = ['student', 'lecturer', 'course_representative', 'assistant', 'admin'];
+const ROLE_OPTIONS = ['student', 'lecturer', 'course_representative', 'assistant_course_representative', 'course_secretary', 'assistant_course_secretary', 'assistant', 'admin'];
 
 function memberMarkup(member) {
   const action = member.approval_status === 'pending'
@@ -50,6 +50,35 @@ function bindActions() {
   document.querySelectorAll('[data-role-select]').forEach((select) => select.addEventListener('change', () => changeRole(select.dataset.roleSelect, select.value)));
 }
 
+function bindEpisodeForm() {
+  const form = document.querySelector('#episode-form');
+  if (!form || form.dataset.bound) return;
+  form.dataset.bound = 'true';
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const title = form.querySelector('[name="title"]');
+    const body = form.querySelector('[name="body"]');
+    const button = form.querySelector('button[type="submit"]');
+    if (!title.value.trim() || !body.value.trim()) {
+      showInlineAlert(document.querySelector('#admin-alert'), 'Add both a title and the episode writing.');
+      return;
+    }
+    button.disabled = true;
+    button.textContent = 'Adding…';
+    try {
+      await createEpisode({ title: title.value, body: body.value });
+      form.reset();
+      window.dispatchEvent(new CustomEvent('classconnect:episodes-changed'));
+      showInlineAlert(document.querySelector('#admin-alert'), 'Episode added to the reading room.', 'success');
+    } catch (error) {
+      showInlineAlert(document.querySelector('#admin-alert'), error.message || 'The episode could not be added.');
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Add episode';
+    }
+  });
+}
+
 export async function loadMembers() {
   const pending = document.querySelector('#pending-members');
   const approved = document.querySelector('#approved-members');
@@ -63,8 +92,10 @@ export async function loadMembers() {
 export function initAdmin(profile) {
   adminProfile = profile;
   const search = document.querySelector('#member-search');
-  search?.addEventListener('input', renderMembers);
-  document.querySelector('#refresh-members')?.addEventListener('click', () => loadMembers().catch((error) => showInlineAlert(document.querySelector('#admin-alert'), error.message || 'Could not refresh members.')));
+  if (search && !search.dataset.bound) { search.dataset.bound = 'true'; search.addEventListener('input', renderMembers); }
+  const refresh = document.querySelector('#refresh-members');
+  if (refresh && !refresh.dataset.bound) { refresh.dataset.bound = 'true'; refresh.addEventListener('click', () => loadMembers().catch((error) => showInlineAlert(document.querySelector('#admin-alert'), error.message || 'Could not refresh members.'))); }
+  bindEpisodeForm();
   if (adminProfile?.role === 'admin' && adminProfile?.approval_status === 'approved') return loadMembers();
   return Promise.resolve([]);
 }

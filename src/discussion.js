@@ -84,9 +84,32 @@ async function submitReply(form) {
   }
 }
 
+function confirmDelete(message) {
+  return new Promise((resolve) => {
+    let dialog = document.querySelector('#classconnect-confirm');
+    if (!dialog) {
+      dialog = document.createElement('div');
+      dialog.id = 'classconnect-confirm';
+      dialog.className = 'confirm-overlay';
+      dialog.setAttribute('role', 'dialog');
+      dialog.setAttribute('aria-modal', 'true');
+      dialog.setAttribute('aria-labelledby', 'confirm-title');
+      dialog.innerHTML = '<div class="confirm-card"><h2 id="confirm-title">Delete comment?</h2><p class="confirm-message"></p><div class="confirm-actions"><button class="confirm-cancel" type="button">Cancel</button><button class="confirm-delete" type="button">Delete</button></div></div>';
+      document.body.appendChild(dialog);
+    }
+    dialog.querySelector('.confirm-message').textContent = message;
+    dialog.hidden = false;
+    const finish = (answer) => { dialog.hidden = true; resolve(answer); };
+    dialog.querySelector('.confirm-cancel').onclick = () => finish(false);
+    dialog.querySelector('.confirm-delete').onclick = () => finish(true);
+    dialog.onclick = (event) => { if (event.target === dialog) finish(false); };
+    dialog.querySelector('.confirm-cancel').focus();
+  });
+}
+
 async function deleteComment(commentId, admin = false) {
   const message = admin ? 'Permanently delete this comment and its replies for everyone? This cannot be undone.' : 'Delete your comment? Replies will remain with a placeholder.';
-  if (!window.confirm(message)) return;
+  if (!await confirmDelete(message)) return;
   try {
     if (admin) await removeCommentAsAdmin(commentId); else await removeOwnComment(commentId);
     await loadDiscussion();

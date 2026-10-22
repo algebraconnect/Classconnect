@@ -15,6 +15,12 @@ function commentMarkup(comment, isReply = false) {
   return `<article class="comment ${isReply ? 'comment-reply' : ''}" data-comment="${escapeAttr(comment.id)}"><div class="comment-main">${avatarMarkup(comment.author)}<div class="comment-body"><div class="comment-meta"><strong>${escapeHtml(comment.author.full_name || 'Class member')}</strong>${approvalBadge(comment.author.approval_status)}${roleMarkup(comment.author.role)}<span class="comment-time">${formatDate(comment.created_at)}</span></div><p class="comment-text">${visibleText(comment)}</p>${actions}</div></div><div class="reply-slot"></div></article>`;
 }
 
+function replyContextMarkup(comment) {
+  const authorName = comment.author?.full_name || 'Class member';
+  const message = comment.deleted_at ? 'Comment removed' : comment.body || '';
+  return `<div class="reply-context" aria-label="Replying to ${escapeAttr(authorName)}"><span class="reply-context-label">Replying to ${escapeHtml(authorName)}</span><blockquote>${escapeHtml(message)}</blockquote></div>`;
+}
+
 function treeMarkup() {
   const replies = new Map();
   for (const comment of state.comments) {
@@ -47,9 +53,10 @@ function render() {
 
 function insertReplyForm(commentId) {
   const comment = document.querySelector(`[data-comment="${CSS.escape(commentId)}"]`);
-  if (!comment || comment.querySelector('.reply-form')) return;
+  const source = state.comments.find((item) => item.id === commentId);
+  if (!comment || !source || comment.querySelector('.reply-form')) return;
   const slot = comment.querySelector('.reply-slot');
-  slot.innerHTML = `<form class="reply-form" data-reply-form="${escapeAttr(commentId)}"><input name="reply" maxlength="2000" placeholder="Write a reply…" aria-label="Write a reply" required /><button type="submit">Reply</button></form>`;
+  slot.innerHTML = `${replyContextMarkup(source)}<form class="reply-form" data-reply-form="${escapeAttr(commentId)}"><input name="reply" maxlength="2000" placeholder="Write a reply…" aria-label="Write a reply" required /><button type="submit">Reply</button></form>`;
   const form = slot.querySelector('[data-reply-form]');
   form?.addEventListener('submit', (event) => { event.preventDefault(); submitReply(form); });
   slot.querySelector('input')?.focus();

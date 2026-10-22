@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="ClassConnect — learning, teaching and applying further algebra." />
+    <meta name="theme-color" content="#020024" />
+    <title>ClassConnect | Further Algebra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <main id="login-view" class="login-view" aria-labelledby="login-title">
+        <div class="math-art" aria-hidden="true">
+          <span class="formula formula-one">x² + y² = 25</span>
+          <span class="formula formula-two">y = mx + b</span>
+          <span class="formula formula-three">a(b + c) = ab + ac</span>
+          <span class="formula formula-four">(x − h)² + (y − k)² = r²</span>
+          <span class="formula formula-five">x = −b ± √b² − 4ac<br /><small>────────</small><br />2a</span>
+          <span class="axis axis-one"><i></i><b></b><em>x</em><strong>y</strong></span>
+          <span class="axis axis-two"><i></i><b></b><em>x</em><strong>y</strong></span>
+          <span class="cap cap-one">⌒</span>
+          <span class="cap cap-two">⌒</span>
+          <span class="plus plus-one">+</span><span class="plus plus-two">+</span><span class="plus plus-three">+</span>
+          <span class="dot-field dot-field-one"></span><span class="dot-field dot-field-two"></span>
+          <span class="arc arc-one"></span><span class="arc arc-two"></span>
+        </div>
+        <section class="login-panel">
+          <div class="brand-lockup brand-lockup-login">
+            <div class="brand-mark" aria-hidden="true"><span class="cap-top"></span><span class="cap-base"></span><span class="tassel"></span></div>
+            <div>
+              <div class="brand-name">Class<span>Connect</span></div>
+              <div class="brand-tagline">learning, teaching and applying further algebra</div>
+            </div>
+          </div>
+          <div class="login-card">
+            <p class="eyebrow">Further Algebra · Class room</p>
+            <h1 id="login-title">Welcome Back <span aria-hidden="true">👋</span></h1>
+            <p class="login-subtitle">Sign in to your ClassConnect account</p>
+            <button id="google-sign-in" class="google-button" type="button">
+              <svg class="google-g" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                <path fill="#4285F4" d="M21.35 12.27c0-.78-.07-1.54-.24-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42Z"/>
+                <path fill="#34A853" d="M12 21.7c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.55 0-4.71-1.72-5.49-4.03H3.27v2.52A9.74 9.74 0 0 0 12 21.7Z"/>
+                <path fill="#FBBC05" d="M6.51 13.78a5.86 5.86 0 0 1 0-3.56V7.7H3.27a9.73 9.73 0 0 0 0 8.6l3.24-2.52Z"/>
+                <path fill="#EA4335" d="M12 6.19c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.84 3.27 14.63 2.3 12 2.3a9.74 9.74 0 0 0-8.73 5.4l3.24 2.52C7.29 7.91 9.45 6.19 12 6.19Z"/>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+            <p class="login-note">Use your Google account to join the class reading room.</p>
+            <div id="login-alert" class="inline-alert" role="status" aria-live="polite" hidden></div>
+          </div>
+          <p class="login-footer">A thoughtful space for the next step in your learning.</p>
+        </section>
+      </main>
+
+      <main id="app-view" class="app-view" hidden>
+        <header class="site-header">
+          <div class="header-inner">
+            <a class="brand-lockup brand-lockup-header" href="#/read" data-route="read" aria-label="ClassConnect home">
+              <div class="brand-mark" aria-hidden="true"><span class="cap-top"></span><span class="cap-base"></span><span class="tassel"></span></div>
+              <div><div class="brand-name">Class<span>Connect</span></div><div class="brand-tagline">learning, teaching and applying further algebra</div></div>
+            </a>
+            <nav class="main-nav" aria-label="Primary navigation">
+              <a href="#/read" data-route="read">Reading room</a>
+              <a href="#/admin" data-route="admin" id="admin-nav" hidden>Admin desk</a>
+            </nav>
+            <div class="header-actions">
+              <button id="account-toggle" class="account-chip" type="button" aria-expanded="false" aria-controls="account-menu">
+                <span id="header-avatar" class="avatar avatar-small"></span>
+                <span id="header-user-name">Account</span>
+                <span class="chevron" aria-hidden="true">⌄</span>
+              </button>
+              <div id="account-menu" class="account-menu" hidden>
+                <div id="account-menu-content"></div>
+                <button id="sign-out" class="menu-action" type="button">Sign out</button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div id="app-alert" class="app-alert" role="status" aria-live="polite" hidden></div>
+
+        <section id="read-view" class="page-view page-view-reading" aria-labelledby="page-title">
+          <div class="reading-hero">
+            <div class="hero-copy">
+              <p class="eyebrow eyebrow-light">Further Algebra · Episode One</p>
+              <h1 id="page-title">The first day of meeting in a new class</h1>
+              <p class="hero-intro">A class begins with a room, a lesson, and the people who make learning feel possible.</p>
+              <div class="hero-meta"><span class="meta-dot"></span><span id="episode-meta">Reading room · Live discussion</span></div>
+            </div>
+            <div class="hero-equation" aria-hidden="true"><span>f(x) = ax² + bx + c</span><i></i><b></b></div>
+          </div>
+
+          <div class="reading-layout">
+            <aside class="reading-sidebar" aria-label="Episode information">
+              <div class="sidebar-card sticky-card">
+                <p class="eyebrow">This episode</p>
+                <div class="episode-number">01</div>
+                <h2>First day, new connections</h2>
+                <p class="muted">Read the lecturer’s supplied class writing, then add a thoughtful response when your account is approved.</p>
+                <div class="sidebar-rule"></div>
+                <div class="sidebar-stat"><span>Discussion</span><strong id="comment-count">—</strong></div>
+                <div class="sidebar-stat"><span>Your access</span><strong id="access-label">Checking</strong></div>
+              </div>
+            </aside>
+
+            <article class="episode-card">
+              <div class="episode-heading">
+                <div><p class="eyebrow">Writing piece on Further Algebra class</p><h2>Episode One</h2></div>
+                <span class="episode-badge">20 Oct 2026</span>
+              </div>
+              <div id="episode-content" class="episode-content" aria-live="polite"></div>
+              <div class="episode-endnote"><span class="endnote-line"></span><span>End of Episode One</span><span class="endnote-line"></span></div>
+            </article>
+
+            <aside class="discussion-panel" aria-labelledby="discussion-title">
+              <div class="discussion-heading"><div><p class="eyebrow">The class conversation</p><h2 id="discussion-title">Discuss the reading</h2></div><span class="discussion-count" id="discussion-count">0</span></div>
+              <div id="discussion-permission" class="permission-note"></div>
+              <form id="comment-form" class="comment-form" novalidate>
+                <label for="comment-input">Add your perspective</label>
+                <textarea id="comment-input" rows="4" maxlength="2000" placeholder="What stayed with you from this episode?" required></textarea>
+                <div class="form-row"><span class="character-count"><span id="character-count">0</span>/2000</span><button class="primary-button" type="submit">Post comment <span aria-hidden="true">↗</span></button></div>
+              </form>
+              <div id="discussion-list" class="discussion-list" aria-live="polite"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section id="admin-view" class="page-view admin-page" aria-labelledby="admin-title" hidden>
+          <div class="admin-heading"><div><p class="eyebrow">Admin desk · Controlled access</p><h1 id="admin-title">Keep the class room trusted.</h1><p>Review membership, protect the conversation, and assign responsibilities without changing a user’s identity.</p></div><div class="admin-heading-mark" aria-hidden="true">∑</div></div>
+          <div class="admin-toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><input id="member-search" type="search" placeholder="Search by name or email" /></label><button id="refresh-members" class="secondary-button" type="button"><span aria-hidden="true">↻</span> Refresh</button></div>
+          <div id="admin-alert" class="inline-alert" role="status" aria-live="polite" hidden></div>
+          <div class="member-sections"><section class="member-section"><div class="section-heading"><div><p class="eyebrow">Needs a decision</p><h2>Pending &amp; unapproved</h2></div><span id="pending-count" class="section-count">0</span></div><div id="pending-members" class="member-list"></div></section><section class="member-section"><div class="section-heading"><div><p class="eyebrow">Ready to participate</p><h2>Approved members</h2></div><span id="approved-count" class="section-count section-count-success">0</span></div><div id="approved-members" class="member-list"></div></section></div>
+        </section>
+
+        <footer class="site-footer"><span>ClassConnect</span><span>Learning, teaching and applying further algebra</span><span>Built for considered conversation.</span></footer>
+      </main>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+    <script type="module" src="/src/app.js"></script>
+  </body>
+</html>

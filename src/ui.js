@@ -2,6 +2,9 @@ const ROLE_LABELS = Object.freeze({
   admin: 'Admin',
   lecturer: 'Lecturer',
   course_representative: 'Course Representative',
+  assistant_course_representative: 'Assistant Course Representative',
+  course_secretary: 'Course Secretary',
+  assistant_course_secretary: 'Assistant Course Secretary',
   assistant: 'Assistant',
   student: 'Student',
 });

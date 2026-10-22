@@ -9,10 +9,12 @@ function visibleText(comment) { return comment.deleted_at ? '<span class="delete
 function commentMarkup(comment, isReply = false) {
   const isOwner = comment.author_id === state.profile?.id;
   const isAdmin = state.profile?.role === 'admin' && state.profile?.approval_status === 'approved';
+  const parent = isReply ? state.comments.find((item) => item.id === comment.parent_id) : null;
+  const replyContext = parent ? replyContextMarkup(parent) : '';
   const actions = comment.deleted_at
     ? (isAdmin ? `<div class="comment-actions"><button class="text-button danger admin-delete-comment" data-comment-id="${escapeAttr(comment.id)}" type="button">Delete permanently</button></div>` : '')
     : `<div class="comment-actions">${canPost() ? `<button class="text-button reply-trigger" data-comment-id="${escapeAttr(comment.id)}" type="button">Reply</button>` : ''}${isOwner ? `<button class="text-button danger delete-comment" data-comment-id="${escapeAttr(comment.id)}" type="button">Delete</button>` : ''}${isAdmin && !isOwner ? `<button class="text-button danger admin-delete-comment" data-comment-id="${escapeAttr(comment.id)}" type="button">Delete permanently</button>` : ''}</div>`;
-  return `<article class="comment ${isReply ? 'comment-reply' : ''}" data-comment="${escapeAttr(comment.id)}"><div class="comment-main">${avatarMarkup(comment.author)}<div class="comment-body"><div class="comment-meta"><strong>${escapeHtml(comment.author.full_name || 'Class member')}</strong>${approvalBadge(comment.author.approval_status)}${roleMarkup(comment.author.role)}<span class="comment-time">${formatDate(comment.created_at)}</span></div><p class="comment-text">${visibleText(comment)}</p>${actions}</div></div><div class="reply-slot"></div></article>`;
+  return `<article class="comment ${isReply ? 'comment-reply' : ''}" data-comment="${escapeAttr(comment.id)}"><div class="comment-main">${avatarMarkup(comment.author)}<div class="comment-body">${replyContext}<div class="comment-meta"><strong>${escapeHtml(comment.author.full_name || 'Class member')}</strong>${approvalBadge(comment.author.approval_status)}${roleMarkup(comment.author.role)}<span class="comment-time">${formatDate(comment.created_at)}</span></div><p class="comment-text">${visibleText(comment)}</p>${actions}</div></div><div class="reply-slot"></div></article>`;
 }
 
 function replyContextMarkup(comment) {

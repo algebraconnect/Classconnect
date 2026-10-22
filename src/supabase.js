@@ -11,8 +11,14 @@ export async function getMyProfile(userId) {
   return data;
 }
 
-export async function getEpisode() {
-  const { data, error } = await supabase.from('episodes').select('*').eq('slug', 'episode-one').maybeSingle();
+export async function listEpisodes() {
+  const { data, error } = await supabase.from('episodes').select('id, slug, title, body, published, created_at').eq('published', true).order('created_at', { ascending: true });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function getEpisode(slug = 'episode-one') {
+  const { data, error } = await supabase.from('episodes').select('*').eq('slug', slug).maybeSingle();
   if (error) throw error;
   return data;
 }

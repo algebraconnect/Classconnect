@@ -50,6 +50,8 @@ function insertReplyForm(commentId) {
   if (!comment || comment.querySelector('.reply-form')) return;
   const slot = comment.querySelector('.reply-slot');
   slot.innerHTML = `<form class="reply-form" data-reply-form="${escapeAttr(commentId)}"><input name="reply" maxlength="2000" placeholder="Write a reply…" aria-label="Write a reply" required /><button type="submit">Reply</button></form>`;
+  const form = slot.querySelector('[data-reply-form]');
+  form?.addEventListener('submit', (event) => { event.preventDefault(); submitReply(form); });
   slot.querySelector('input')?.focus();
 }
 

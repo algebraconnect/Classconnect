@@ -25,7 +25,8 @@ export async function getComments(episodeId) {
   const { data: authors, error: authorsError } = await supabase.from('profiles_public').select('id, full_name, avatar_url, role, approval_status').in('id', authorIds);
   if (authorsError) throw authorsError;
   const authorMap = new Map((authors || []).map((author) => [author.id, author]));
-  return data.map((comment) => ({ ...comment, author: authorMap.get(comment.author_id) || { id: comment.author_id, full_name: 'Class member', role: 'student', approval_status: 'pending' } }));
+  const uniqueComments = [...new Map(data.map((comment) => [comment.id, comment])).values()];
+  return uniqueComments.map((comment) => ({ ...comment, author: authorMap.get(comment.author_id) || { id: comment.author_id, full_name: 'Class member', role: 'student', approval_status: 'pending' } }));
 }
 
 export async function createComment({ episodeId, parentId = null, body, authorId }) {
@@ -43,7 +44,7 @@ export async function removeOwnComment(commentId) {
 }
 
 export async function removeCommentAsAdmin(commentId) {
-  const { data, error } = await supabase.rpc('admin_remove_comment', { target_comment_id: commentId });
+  const { data, error } = await supabase.rpc('admin_delete_comment_permanently', { target_comment_id: commentId });
   if (error) throw error;
   return data;
 }
@@ -62,6 +63,15 @@ export async function setMemberStatus(memberId, status) {
 
 export async function setMemberRole(memberId, role) {
   const { data, error } = await supabase.rpc('admin_set_member_role', { target_user_id: memberId, next_role: role });
+  if (error) throw error;
+  return data;
+}
+
+export async function createEpisode({ title, body }) {
+  const cleanTitle = title.trim();
+  const cleanBody = body.trim();
+  if (!cleanTitle || !cleanBody) throw new Error('Add both a title and the episode writing.');
+  const { data, error } = await supabase.rpc('admin_create_episode', { episode_title: cleanTitle, episode_body: cleanBody });
   if (error) throw error;
   return data;
 }

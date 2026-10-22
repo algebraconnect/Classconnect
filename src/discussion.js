@@ -9,7 +9,9 @@ function visibleText(comment) { return comment.deleted_at ? '<span class="delete
 function commentMarkup(comment, isReply = false) {
   const isOwner = comment.author_id === state.profile?.id;
   const isAdmin = state.profile?.role === 'admin' && state.profile?.approval_status === 'approved';
-  const actions = comment.deleted_at ? '' : `<div class="comment-actions">${canPost() ? `<button class="text-button reply-trigger" data-comment-id="${escapeAttr(comment.id)}" type="button">Reply</button>` : ''}${isOwner ? `<button class="text-button danger delete-comment" data-comment-id="${escapeAttr(comment.id)}" type="button">Delete</button>` : ''}${isAdmin && !isOwner ? `<button class="text-button danger admin-delete-comment" data-comment-id="${escapeAttr(comment.id)}" type="button">Remove</button>` : ''}</div>`;
+  const actions = comment.deleted_at
+    ? (isAdmin ? `<div class="comment-actions"><button class="text-button danger admin-delete-comment" data-comment-id="${escapeAttr(comment.id)}" type="button">Delete permanently</button></div>` : '')
+    : `<div class="comment-actions">${canPost() ? `<button class="text-button reply-trigger" data-comment-id="${escapeAttr(comment.id)}" type="button">Reply</button>` : ''}${isOwner ? `<button class="text-button danger delete-comment" data-comment-id="${escapeAttr(comment.id)}" type="button">Delete</button>` : ''}${isAdmin && !isOwner ? `<button class="text-button danger admin-delete-comment" data-comment-id="${escapeAttr(comment.id)}" type="button">Delete permanently</button>` : ''}</div>`;
   return `<article class="comment ${isReply ? 'comment-reply' : ''}" data-comment="${escapeAttr(comment.id)}"><div class="comment-main">${avatarMarkup(comment.author)}<div class="comment-body"><div class="comment-meta"><strong>${escapeHtml(comment.author.full_name || 'Class member')}</strong>${approvalBadge(comment.author.approval_status)}${roleMarkup(comment.author.role)}<span class="comment-time">${formatDate(comment.created_at)}</span></div><p class="comment-text">${visibleText(comment)}</p>${actions}</div></div><div class="reply-slot"></div></article>`;
 }
 
@@ -71,7 +73,7 @@ async function submitReply(form) {
 }
 
 async function deleteComment(commentId, admin = false) {
-  const message = admin ? 'Remove this comment for the class? Replies will remain with a placeholder.' : 'Delete your comment? Replies will remain with a placeholder.';
+  const message = admin ? 'Permanently delete this comment and its replies for everyone? This cannot be undone.' : 'Delete your comment? Replies will remain with a placeholder.';
   if (!window.confirm(message)) return;
   try {
     if (admin) await removeCommentAsAdmin(commentId); else await removeOwnComment(commentId);
@@ -106,15 +108,21 @@ export function initDiscussion({ episodeId, profile, toast, onChanged }) {
   const form = document.querySelector('#comment-form');
   const input = document.querySelector('#comment-input');
   const count = document.querySelector('#character-count');
-  input?.addEventListener('input', () => { if (count) count.textContent = String(input.value.length); });
-  form?.addEventListener('submit', async (event) => {
+  if (input && !input.dataset.discussionBound) {
+    input.dataset.discussionBound = 'true';
+    input.addEventListener('input', () => { if (count) count.textContent = String(input.value.length); });
+  }
+  if (!form || form.dataset.discussionBound) return loadDiscussion();
+  form.dataset.discussionBound = 'true';
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (!canPost()) return;
+    if (!canPost() || state.submitting) return;
+    state.submitting = true;
     const button = form.querySelector('button[type="submit"]');
     button.disabled = true; button.innerHTML = '<span class="spinner"></span>Posting';
     try { await createComment({ episodeId, body: input.value, authorId: profile.id }); input.value = ''; if (count) count.textContent = '0'; await loadDiscussion(); showToast(toast, 'Comment posted to the class room.', 'success'); }
     catch (error) { showToast(toast, error.message || 'Could not post your comment.', 'error'); }
-    finally { button.disabled = false; button.innerHTML = 'Post comment <span aria-hidden="true">↗</span>'; }
+    finally { state.submitting = false; button.disabled = false; button.innerHTML = 'Post comment'; }
   });
   return loadDiscussion();
 }

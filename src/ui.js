@@ -5,11 +5,12 @@ const ROLE_LABELS = Object.freeze({
   assistant_course_representative: 'Assistant Course Representative',
   course_secretary: 'Course Secretary',
   assistant_course_secretary: 'Assistant Course Secretary',
+  developer: 'Developer',
   assistant: 'Assistant',
   student: 'Student',
 });
 
-const STATUS_LABELS = Object.freeze({ pending: 'Pending approval', approved: 'Approved', revoked: 'Revoked' });
+const STATUS_LABELS = Object.freeze({ pending: 'Pending verification', approved: 'Verified', revoked: 'Verification revoked' });
 
 export function escapeHtml(value = '') {
   return String(value).replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
@@ -17,7 +18,7 @@ export function escapeHtml(value = '') {
 
 export function escapeAttr(value = '') { return escapeHtml(value).replace(/`/g, '&#96;'); }
 export function roleLabel(role) { return ROLE_LABELS[role] || 'Student'; }
-export function statusLabel(status) { return STATUS_LABELS[status] || 'Pending approval'; }
+export function statusLabel(status) { return STATUS_LABELS[status] || 'Pending verification'; }
 export function formatDate(value) { return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)); }
 export function initials(name = 'Class member') { return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase() || 'CM'; }
 export function safeAvatarUrl(value = '') {
@@ -36,7 +37,7 @@ export function avatarMarkup(profile, className = 'avatar') {
   return `<span class="${className}">${avatarUrl ? `<img src="${escapeAttr(avatarUrl)}" alt="" referrerpolicy="no-referrer" />` : escapeHtml(initials(name))}</span>`;
 }
 
-export function approvalBadge(status) { return status === 'approved' ? '<span class="approval-badge" title="Approved ClassConnect member" aria-label="Approved ClassConnect member">✓</span>' : ''; }
+export function approvalBadge(status) { return status === 'approved' ? '<span class="approval-badge" title="Verified ClassConnect member" aria-label="Verified ClassConnect member">✓</span>' : ''; }
 export function roleMarkup(role) { return `<span class="role-chip">${escapeHtml(roleLabel(role))}</span>`; }
 export function statusMarkup(status) { return `<span class="status-chip ${escapeAttr(status)}">${escapeHtml(statusLabel(status))}</span>`; }
 

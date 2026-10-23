@@ -132,9 +132,9 @@ function renderPermission() {
     note.className = 'permission-note'; note.textContent = 'Sign in to read the live conversation and add a response.'; form.hidden = true; if (access) access.textContent = 'Sign in'; return;
   }
   const status = state.profile.approval_status;
-  if (status === 'approved') { note.className = 'permission-note approved'; note.textContent = 'Your account is approved. Add a thoughtful response or reply to a classmate.'; form.hidden = false; if (access) access.textContent = 'Approved'; }
-  else if (status === 'revoked') { note.className = 'permission-note revoked'; note.textContent = 'Your account can read the discussion, but publishing is paused while approval is revoked.'; form.hidden = true; if (access) access.textContent = 'Read only'; }
-  else { note.className = 'permission-note'; note.textContent = 'Your account is pending approval. You can read the full discussion, and posting will unlock after approval.'; form.hidden = true; if (access) access.textContent = 'Pending'; }
+  if (status === 'approved') { note.className = 'permission-note approved'; note.textContent = 'Your account is verified. Add a thoughtful response or reply to a classmate.'; form.hidden = false; if (access) access.textContent = 'Verified'; }
+  else if (status === 'revoked') { note.className = 'permission-note revoked'; note.textContent = 'Your account can read the discussion, but publishing is paused while verification is revoked.'; form.hidden = true; if (access) access.textContent = 'Read only'; }
+  else { note.className = 'permission-note'; note.textContent = 'Your account is pending verification. You can read the full discussion, and posting will unlock after verification.'; form.hidden = true; if (access) access.textContent = 'Pending'; }
 }
 
 export function initDiscussion({ episodeId, profile, toast, onChanged }) {

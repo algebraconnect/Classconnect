@@ -100,7 +100,7 @@
                 <p class="eyebrow">This episode</p>
                 <div id="episode-number" class="episode-number">01</div>
                 <h2 id="episode-sidebar-title">First day, new connections</h2>
-                <p class="muted">Read Othnevia’s supplied class writing, then add a thoughtful response when your account is approved.</p>
+                <p class="muted">Read <span class="author-name-emphasis">Othnevia</span>’s supplied class writing, then add a thoughtful response when your account is verified.</p>
                 <div class="sidebar-rule"></div>
                 <label class="episode-picker-label" for="episode-picker">Episodes</label>
                 <select id="episode-picker" class="episode-picker" aria-label="Choose an episode"></select>
@@ -137,7 +137,7 @@
           <div class="admin-toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><input id="member-search" type="search" placeholder="Search by name or email" /></label><button id="refresh-members" class="secondary-button" type="button"><span aria-hidden="true">↻</span> Refresh</button></div>
           <div id="admin-alert" class="inline-alert" role="status" aria-live="polite" hidden></div>
           <section class="member-section episode-composer"><div class="section-heading"><div><p class="eyebrow">Class writing</p><h2>Add an episode</h2></div></div><p class="muted">Add a reading when the class is ready for the next part.</p><form id="episode-form" class="episode-form" novalidate><label for="episode-title-input">Episode title</label><input id="episode-title-input" name="title" maxlength="160" placeholder="For example: A second conversation" required /><label for="episode-body-input">Writing</label><textarea id="episode-body-input" name="body" rows="8" maxlength="30000" placeholder="Paste or write the class episode here…" required></textarea><button class="primary-button" type="submit">Add episode</button></form></section>
-          <div class="member-sections"><section class="member-section"><div class="section-heading"><div><p class="eyebrow">Needs a decision</p><h2>Pending &amp; unapproved</h2></div><span id="pending-count" class="section-count">0</span></div><div id="pending-members" class="member-list"></div></section><section class="member-section"><div class="section-heading"><div><p class="eyebrow">Ready to participate</p><h2>Approved members</h2></div><span id="approved-count" class="section-count section-count-success">0</span></div><div id="approved-members" class="member-list"></div></section></div>
+          <div class="member-sections"><section class="member-section"><div class="section-heading"><div><p class="eyebrow">Needs a decision</p><h2>Pending &amp; unverified</h2></div><span id="pending-count" class="section-count">0</span></div><div id="pending-members" class="member-list"></div></section><section class="member-section"><div class="section-heading"><div><p class="eyebrow">Ready to participate</p><h2>Verified members</h2></div><span id="approved-count" class="section-count section-count-success">0</span></div><div id="approved-members" class="member-list"></div></section></div>
         </section>
 
         <footer class="site-footer"><span>ClassConnect</span><span>Learning, teaching and applying further algebra</span><span>Built for considered conversation.</span></footer>

@@ -4,14 +4,14 @@ import { avatarMarkup, escapeAttr, escapeHtml, roleLabel, showInlineAlert, statu
 let members = [];
 let adminProfile = null;
 
-const ROLE_OPTIONS = ['student', 'lecturer', 'course_representative', 'assistant_course_representative', 'course_secretary', 'assistant_course_secretary', 'assistant', 'admin'];
+const ROLE_OPTIONS = ['student', 'lecturer', 'course_representative', 'assistant_course_representative', 'course_secretary', 'assistant_course_secretary', 'developer', 'assistant', 'admin'];
 
 function memberMarkup(member) {
   const action = member.approval_status === 'pending'
-    ? `<button class="approve-button" type="button" data-status="approved" data-member-id="${escapeAttr(member.id)}">Approve</button>`
+    ? `<button class="approve-button" type="button" data-status="approved" data-member-id="${escapeAttr(member.id)}">Verify</button>`
     : member.approval_status === 'approved'
-      ? `<button class="revoke-button" type="button" data-status="revoked" data-member-id="${escapeAttr(member.id)}">Revoke</button>`
-      : `<button class="restore-button" type="button" data-status="approved" data-member-id="${escapeAttr(member.id)}">Restore</button>`;
+      ? `<button class="revoke-button" type="button" data-status="revoked" data-member-id="${escapeAttr(member.id)}">Revoke verification</button>`
+      : `<button class="restore-button" type="button" data-status="approved" data-member-id="${escapeAttr(member.id)}">Restore verification</button>`;
   const roleOptions = ROLE_OPTIONS.map((role) => `<option value="${role}" ${role === member.role ? 'selected' : ''}>${escapeHtml(roleLabel(role))}</option>`).join('');
   return `<article class="member-row"><div>${avatarMarkup(member)}</div><div class="member-info"><strong>${escapeHtml(member.full_name || 'Unnamed member')}</strong><span>${escapeHtml(member.email || 'No email supplied')}</span><div class="member-meta">${statusMarkup(member.approval_status)}</div></div><div class="member-controls"><select aria-label="Role for ${escapeAttr(member.full_name || 'member')}" data-role-select="${escapeAttr(member.id)}">${roleOptions}</select>${action}</div></article>`;
 }
@@ -24,7 +24,7 @@ function renderMembers() {
   document.querySelector('#pending-count').textContent = String(pending.length);
   document.querySelector('#approved-count').textContent = String(approved.length);
   document.querySelector('#pending-members').innerHTML = pending.length ? pending.map(memberMarkup).join('') : '<div class="member-empty">No pending or revoked members match this search.</div>';
-  document.querySelector('#approved-members').innerHTML = approved.length ? approved.map(memberMarkup).join('') : '<div class="member-empty">No approved members match this search.</div>';
+  document.querySelector('#approved-members').innerHTML = approved.length ? approved.map(memberMarkup).join('') : '<div class="member-empty">No verified members match this search.</div>';
   bindActions();
 }
 

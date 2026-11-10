@@ -89,3 +89,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .header-cap-svg .cap-tassel-line { fill: none; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; }
 .header-cap-svg .cap-tassel-dot { fill: var(--gold); stroke: #fff; stroke-width: .8; }
 .brand-lockup-login .header-cap-svg { width: 66px; height: 58px; }
+/* Episode selector clarity update: copy these rules into style.css. */
+.episode-picker-label { margin-bottom: 8px; color: var(--ink); font-size: 11px; letter-spacing: .04em; }
+.episode-picker { min-height: 43px; padding: 11px 36px 11px 12px; border: 1px solid #cfd7eb; border-radius: 11px; background: #fff; color: var(--ink); font-size: 12px; font-weight: 700; box-shadow: 0 5px 14px rgba(29, 55, 128, .06); }
+.episode-picker:focus-visible { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29, 111, 242, .15); }
+.episode-picker-help { margin: 7px 0 0; color: var(--soft-muted); font-size: 10px; line-height: 1.45; }
+@media (max-width: 760px) { .episode-picker { min-height: 46px; font-size: 13px; } .episode-picker-help { font-size: 11px; } }

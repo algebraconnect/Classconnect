@@ -83,10 +83,11 @@ function bindEpisodeForm() {
 function renderEpisodeEditor() {
   const picker = document.querySelector('#edit-episode-picker');
   if (!picker) return;
+  const requestedEpisodeId = picker.value;
   picker.innerHTML = episodes.length
     ? episodes.map((episode, index) => `<option value="${escapeAttr(episode.id)}">Episode ${index + 1} · ${escapeHtml(episode.title)}</option>`).join('')
     : '<option value="">No published episodes found</option>';
-  const selected = episodes.find((episode) => episode.id === picker.value) || episodes[0];
+  const selected = episodes.find((episode) => episode.id === requestedEpisodeId) || episodes[0];
   if (!selected) return;
   picker.value = selected.id;
   document.querySelector('#edit-episode-title-input').value = selected.title;

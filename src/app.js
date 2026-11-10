@@ -38,7 +38,7 @@ function showApp() { showElement(dom.loginView, false); showElement(dom.appView,
 function renderEpisodePicker() {
   const picker = document.querySelector('#episode-picker');
   if (!picker) return;
-  picker.innerHTML = state.episodes.map((episode, index) => `<option value="${escapeHtml(episode.slug)}">${String(index + 1).padStart(2, '0')} · ${escapeHtml(episode.title)}</option>`).join('');
+  picker.innerHTML = state.episodes.map((episode, index) => `<option value="${escapeHtml(episode.slug)}">Episode ${index + 1} · ${escapeHtml(episode.title)}</option>`).join('');
   picker.value = state.episode?.slug || '';
 }
 

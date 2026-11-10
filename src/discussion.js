@@ -155,7 +155,7 @@ export function initDiscussion({ episodeId, profile, toast, onChanged }) {
     state.submitting = true;
     const button = form.querySelector('button[type="submit"]');
     button.disabled = true; button.innerHTML = '<span class="spinner"></span>Posting';
-    try { await createComment({ episodeId, body: input.value, authorId: profile.id }); input.value = ''; if (count) count.textContent = '0'; await loadDiscussion(); showToast(toast, 'Comment posted to the class room.', 'success'); }
+    try { await createComment({ episodeId: state.episodeId, body: input.value, authorId: state.profile.id }); input.value = ''; if (count) count.textContent = '0'; await loadDiscussion(); showToast(toast, 'Comment posted to the class room.', 'success'); }
     catch (error) { showToast(toast, error.message || 'Could not post your comment.', 'error'); }
     finally { state.submitting = false; button.disabled = false; button.innerHTML = 'Post comment'; }
   });

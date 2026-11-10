@@ -98,9 +98,11 @@
             <aside class="reading-sidebar" aria-label="Episode information">
               <div class="sidebar-card sticky-card">
                 <p class="eyebrow">This episode</p>
-                <div id="episode-number" class="episode-number">01</div>
-                <h2 id="episode-sidebar-title">First day, new connections</h2>
-                <p class="muted">Read <span class="author-name-emphasis">Othnevia</span>’s supplied class writing, then add a thoughtful response when your account is verified.</p>
+                <div class="episode-summary">
+                  <div id="episode-number" class="episode-number">01</div>
+                  <h2 id="episode-sidebar-title">First day, new connections</h2>
+                </div>
+                <p id="episode-description" class="muted">Read <span class="author-name-emphasis">Othnevia</span>’s supplied class writing, then add a thoughtful response when your account is verified.</p>
                 <div class="sidebar-rule"></div>
                 <label class="episode-picker-label" for="episode-picker">Choose an episode to read</label>
                 <select id="episode-picker" class="episode-picker" aria-label="Choose an episode to read"></select>
@@ -138,6 +140,7 @@
           <div class="admin-toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><input id="member-search" type="search" placeholder="Search by name or email" /></label><button id="refresh-members" class="secondary-button" type="button"><span aria-hidden="true">↻</span> Refresh</button></div>
           <div id="admin-alert" class="inline-alert" role="status" aria-live="polite" hidden></div>
           <section class="member-section episode-composer"><div class="section-heading"><div><p class="eyebrow">Class writing</p><h2>Add an episode</h2></div></div><p class="muted">Add a reading when the class is ready for the next part.</p><form id="episode-form" class="episode-form" novalidate><label for="episode-title-input">Episode title</label><input id="episode-title-input" name="title" maxlength="160" placeholder="For example: A second conversation" required /><label for="episode-body-input">Writing</label><textarea id="episode-body-input" name="body" rows="8" maxlength="30000" placeholder="Paste or write the class episode here…" required></textarea><button class="primary-button" type="submit">Add episode</button></form></section>
+          <section class="member-section episode-composer"><div class="section-heading"><div><p class="eyebrow">Class writing</p><h2>Edit an episode</h2></div></div><p class="muted">Correct the title or writing, then publish the updated version for students.</p><form id="episode-edit-form" class="episode-form" novalidate><label for="edit-episode-picker">Episode to edit</label><select id="edit-episode-picker" name="episode" required><option value="">Loading episodes…</option></select><label for="edit-episode-title-input">Episode title</label><input id="edit-episode-title-input" name="title" maxlength="160" required /><label for="edit-episode-body-input">Writing</label><textarea id="edit-episode-body-input" name="body" rows="8" maxlength="30000" required></textarea><button class="primary-button" type="submit">Save and publish changes</button></form></section>
           <div class="member-sections"><section class="member-section"><div class="section-heading"><div><p class="eyebrow">Needs a decision</p><h2>Pending &amp; unverified</h2></div><span id="pending-count" class="section-count">0</span></div><div id="pending-members" class="member-list"></div></section><section class="member-section"><div class="section-heading"><div><p class="eyebrow">Ready to participate</p><h2>Verified members</h2></div><span id="approved-count" class="section-count section-count-success">0</span></div><div id="approved-members" class="member-list"></div></section></div>
         </section>
 

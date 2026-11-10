@@ -1,8 +1,9 @@
-import { createEpisode, listMembers, setMemberRole, setMemberStatus } from './supabase.js';
+import { createEpisode, listEpisodes, listMembers, setMemberRole, setMemberStatus, updateEpisode } from './supabase.js';
 import { avatarMarkup, escapeAttr, escapeHtml, roleLabel, showInlineAlert, statusMarkup } from './ui.js';
 
 let members = [];
 let adminProfile = null;
+let episodes = [];
 
 const ROLE_OPTIONS = ['student', 'lecturer', 'course_representative', 'assistant_course_representative', 'course_secretary', 'assistant_course_secretary', 'developer', 'assistant', 'admin'];
 
@@ -79,6 +80,56 @@ function bindEpisodeForm() {
   });
 }
 
+function renderEpisodeEditor() {
+  const picker = document.querySelector('#edit-episode-picker');
+  if (!picker) return;
+  picker.innerHTML = episodes.length
+    ? episodes.map((episode, index) => `<option value="${escapeAttr(episode.id)}">Episode ${index + 1} · ${escapeHtml(episode.title)}</option>`).join('')
+    : '<option value="">No published episodes found</option>';
+  const selected = episodes.find((episode) => episode.id === picker.value) || episodes[0];
+  if (!selected) return;
+  picker.value = selected.id;
+  document.querySelector('#edit-episode-title-input').value = selected.title;
+  document.querySelector('#edit-episode-body-input').value = selected.body;
+}
+
+async function loadEpisodeEditor() {
+  episodes = await listEpisodes();
+  renderEpisodeEditor();
+}
+
+function bindEpisodeEditor() {
+  const form = document.querySelector('#episode-edit-form');
+  const picker = document.querySelector('#edit-episode-picker');
+  if (!form || form.dataset.bound) return;
+  form.dataset.bound = 'true';
+  picker?.addEventListener('change', renderEpisodeEditor);
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const episodeId = picker?.value;
+    const title = form.querySelector('[name="title"]');
+    const body = form.querySelector('[name="body"]');
+    const button = form.querySelector('button[type="submit"]');
+    if (!episodeId || !title.value.trim() || !body.value.trim()) {
+      showInlineAlert(document.querySelector('#admin-alert'), 'Choose an episode and provide both a title and the episode writing.');
+      return;
+    }
+    button.disabled = true;
+    button.textContent = 'Saving…';
+    try {
+      await updateEpisode({ episodeId, title: title.value, body: body.value });
+      window.dispatchEvent(new CustomEvent('classconnect:episodes-changed'));
+      await loadEpisodeEditor();
+      showInlineAlert(document.querySelector('#admin-alert'), 'Episode corrected and republished for students.', 'success');
+    } catch (error) {
+      showInlineAlert(document.querySelector('#admin-alert'), error.message || 'The episode changes could not be saved.');
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Save and publish changes';
+    }
+  });
+}
+
 export async function loadMembers() {
   const pending = document.querySelector('#pending-members');
   const approved = document.querySelector('#approved-members');
@@ -96,6 +147,8 @@ export function initAdmin(profile) {
   const refresh = document.querySelector('#refresh-members');
   if (refresh && !refresh.dataset.bound) { refresh.dataset.bound = 'true'; refresh.addEventListener('click', () => loadMembers().catch((error) => showInlineAlert(document.querySelector('#admin-alert'), error.message || 'Could not refresh members.'))); }
   bindEpisodeForm();
+  bindEpisodeEditor();
+  loadEpisodeEditor().catch((error) => showInlineAlert(document.querySelector('#admin-alert'), error.message || 'Could not load episodes for editing.'));
   if (adminProfile?.role === 'admin' && adminProfile?.approval_status === 'approved') return loadMembers();
   return Promise.resolve([]);
 }

@@ -22,6 +22,7 @@ const dom = {
 };
 
 let state = { session: null, user: null, profile: null, episode: null, episodes: [], adminReady: false };
+const SELECTED_EPISODE_KEY = 'classconnect:selected-episode';
 
 function setLoading(button, loading, label) {
   if (!button) return;
@@ -65,6 +66,7 @@ async function loadEpisodes(preferredSlug = 'episode-one', { scrollToTop = false
   const next = state.episodes.find((episode) => episode.slug === preferredSlug) || state.episodes[0];
   if (!next) return;
   state.episode = next;
+  try { window.localStorage.setItem(SELECTED_EPISODE_KEY, next.slug); } catch { /* Storage may be unavailable in private browsing. */ }
   renderEpisodeDetails();
   if (scrollToTop) window.scrollTo({ top: 0, behavior: 'smooth' });
   await initDiscussion({ episodeId: next.id, profile: state.profile, toast: dom.toast });
@@ -88,7 +90,11 @@ async function hydrateApp(session) {
     renderProfileHeader({ ...state.profile, email: state.user.email || state.profile.email, avatar_url: state.profile.avatar_url || getIdentityDetails(state.user).avatarUrl });
     dom.adminNav.hidden = !(state.profile.role === 'admin' && state.profile.approval_status === 'approved');
     state.episodes = await listEpisodes();
-    state.episode = state.episodes.find((episode) => episode.slug === 'episode-one') || await getEpisode();
+    let savedEpisodeSlug = '';
+    try { savedEpisodeSlug = window.localStorage.getItem(SELECTED_EPISODE_KEY) || ''; } catch { /* Use Episode One when storage is unavailable. */ }
+    state.episode = state.episodes.find((episode) => episode.slug === savedEpisodeSlug)
+      || state.episodes.find((episode) => episode.slug === 'episode-one')
+      || await getEpisode();
     if (state.episode) renderEpisodeDetails();
     await initDiscussion({ episodeId: state.episode?.id || 'local-episode-one', profile: state.profile, toast: dom.toast });
     if (!state.episode) showAppAlert(dom.appAlert, 'The reading is shown from the supplied project content. Run the Supabase setup migration to enable persisted discussion.', 'info'); else hideAppAlert(dom.appAlert);

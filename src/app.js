@@ -48,6 +48,9 @@ function renderEpisodeDetails() {
   const index = Math.max(0, state.episodes.findIndex((item) => item.id === episode.id));
   document.querySelector('#episode-number').textContent = String(index + 1).padStart(2, '0');
   document.querySelector('#episode-sidebar-title').textContent = episode.title;
+  document.querySelector('#episode-description').innerHTML = index === 1
+    ? 'Read <span class="author-name-emphasis">Godsway and Othnevia</span>’s supplied class writing, then add a thoughtful response when your account is verified.'
+    : 'Read <span class="author-name-emphasis">Othnevia</span>’s supplied class writing, then add a thoughtful response when your account is verified.';
   document.querySelector('#page-title').textContent = episode.title;
   document.querySelector('#episode-kicker').textContent = episode.title;
   document.querySelector('#episode-title').textContent = `Episode ${index + 1}`;
@@ -57,12 +60,13 @@ function renderEpisodeDetails() {
   renderEpisodePicker();
 }
 
-async function loadEpisodes(preferredSlug = 'episode-one') {
+async function loadEpisodes(preferredSlug = 'episode-one', { scrollToTop = false } = {}) {
   state.episodes = await listEpisodes();
   const next = state.episodes.find((episode) => episode.slug === preferredSlug) || state.episodes[0];
   if (!next) return;
   state.episode = next;
   renderEpisodeDetails();
+  if (scrollToTop) window.scrollTo({ top: 0, behavior: 'smooth' });
   await initDiscussion({ episodeId: next.id, profile: state.profile, toast: dom.toast });
 }
 
@@ -117,7 +121,7 @@ dom.signOut?.addEventListener('click', handleSignOut);
 dom.accountToggle?.addEventListener('click', () => { dom.accountMenu.hidden = !dom.accountMenu.hidden; dom.accountToggle.setAttribute('aria-expanded', String(!dom.accountMenu.hidden)); });
 document.addEventListener('click', (event) => { if (!event.target.closest('.header-actions')) { dom.accountMenu.hidden = true; dom.accountToggle?.setAttribute('aria-expanded', 'false'); } });
 window.addEventListener('hashchange', () => setRoute(window.location.hash.slice(2) || 'read'));
-document.querySelector('#episode-picker')?.addEventListener('change', (event) => loadEpisodes(event.target.value).catch((error) => showToast(dom.toast, error.message || 'Could not open that episode.', 'error')));
+document.querySelector('#episode-picker')?.addEventListener('change', (event) => loadEpisodes(event.target.value, { scrollToTop: true }).catch((error) => showToast(dom.toast, error.message || 'Could not open that episode.', 'error')));
 window.addEventListener('classconnect:episodes-changed', () => loadEpisodes(state.episode?.slug || 'episode-one').catch((error) => showToast(dom.toast, error.message || 'Could not refresh episodes.', 'error')));
 
 onAuthChange((session) => { if (session) hydrateApp(session); else showLogin(); });

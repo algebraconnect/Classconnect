@@ -95,3 +95,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .episode-picker:focus-visible { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29, 111, 242, .15); }
 .episode-picker-help { margin: 7px 0 0; color: var(--soft-muted); font-size: 10px; line-height: 1.45; }
 @media (max-width: 760px) { .episode-picker { min-height: 46px; font-size: 13px; } .episode-picker-help { font-size: 11px; } }
+.episode-summary { text-align: center; }
+.episode-summary .episode-number { display: block; }
+@media (max-width: 760px) {
+  .sticky-card { display: block; text-align: center; }
+  .sticky-card .episode-picker-label,
+  .sticky-card .episode-picker,
+  .sticky-card .episode-picker-help { text-align: left; }
+  .sticky-card .sidebar-stat { text-align: left; }
+}

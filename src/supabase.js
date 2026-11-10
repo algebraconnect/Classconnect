@@ -82,6 +82,15 @@ export async function createEpisode({ title, body }) {
   return data;
 }
 
+export async function updateEpisode({ episodeId, title, body }) {
+  const cleanTitle = title.trim();
+  const cleanBody = body.trim();
+  if (!episodeId || !cleanTitle || !cleanBody) throw new Error('Choose an episode and provide both a title and the episode writing.');
+  const { data, error } = await supabase.rpc('admin_update_episode', { target_episode_id: episodeId, episode_title: cleanTitle, episode_body: cleanBody });
+  if (error) throw error;
+  return data;
+}
+
 export async function bootstrapAdmin() {
   const { data, error } = await supabase.rpc('bootstrap_initial_admin');
   if (error) {

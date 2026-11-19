@@ -72,7 +72,11 @@ export async function setMemberRole(memberId, role) {
   if (error) throw error;
   return data;
 }
-
+export async function removeMember(memberId) {
+  const { data, error } = await supabase.rpc('admin_remove_member', { target_user_id: memberId });
+  if (error) throw error;
+  return data;
+}
 export async function createEpisode({ title, body }) {
   const cleanTitle = title.trim();
   const cleanBody = body.trim();

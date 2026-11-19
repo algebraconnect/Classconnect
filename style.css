@@ -104,3 +104,4 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   .sticky-card .episode-picker-help { text-align: left; }
   .sticky-card .sidebar-stat { text-align: left; }
 }
+.remove-button { color: #a13b55; background: #fff0f3; }

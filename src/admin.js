@@ -1,4 +1,4 @@
-import { createEpisode, listEpisodes, listMembers, setMemberRole, setMemberStatus, updateEpisode } from './supabase.js';
+import { createEpisode, listEpisodes, listMembers, removeMember, setMemberRole, setMemberStatus, updateEpisode } from './supabase.js';
 import { avatarMarkup, escapeAttr, escapeHtml, roleLabel, showInlineAlert, statusMarkup } from './ui.js';
 
 let members = [];
@@ -14,7 +14,8 @@ function memberMarkup(member) {
       ? `<button class="revoke-button" type="button" data-status="revoked" data-member-id="${escapeAttr(member.id)}">Revoke verification</button>`
       : `<button class="restore-button" type="button" data-status="approved" data-member-id="${escapeAttr(member.id)}">Restore verification</button>`;
   const roleOptions = ROLE_OPTIONS.map((role) => `<option value="${role}" ${role === member.role ? 'selected' : ''}>${escapeHtml(roleLabel(role))}</option>`).join('');
-  return `<article class="member-row"><div>${avatarMarkup(member)}</div><div class="member-info"><strong>${escapeHtml(member.full_name || 'Unnamed member')}</strong><span>${escapeHtml(member.email || 'No email supplied')}</span><div class="member-meta">${statusMarkup(member.approval_status)}</div></div><div class="member-controls"><select aria-label="Role for ${escapeAttr(member.full_name || 'member')}" data-role-select="${escapeAttr(member.id)}">${roleOptions}</select>${action}</div></article>`;
+  const remove = member.approval_status !== 'approved' ? `<button class="remove-button" type="button" data-remove-member="${escapeAttr(member.id)}">Remove</button>` : '';
+  return `<article class="member-row"><div>${avatarMarkup(member)}</div><div class="member-info"><strong>${escapeHtml(member.full_name || 'Unnamed member')}</strong><span>${escapeHtml(member.email || 'No email supplied')}</span><div class="member-meta">${statusMarkup(member.approval_status)}</div></div><div class="member-controls"><select aria-label="Role for ${escapeAttr(member.full_name || 'member')}" data-role-select="${escapeAttr(member.id)}">${roleOptions}</select>${action}${remove}</div></article>`;
 }
 
 function renderMembers() {
@@ -46,9 +47,23 @@ async function changeRole(memberId, role) {
   catch (error) { showInlineAlert(document.querySelector('#admin-alert'), error.message || 'The role change was not saved.'); renderMembers(); }
 }
 
+async function removeMemberAccount(memberId) {
+  const member = members.find((item) => item.id === memberId);
+  if (!member) return;
+  if (!window.confirm(`Permanently remove ${member.full_name || 'this member'}? This is only allowed for pending or revoked members without comments.`)) return;
+  try {
+    await removeMember(memberId);
+    await loadMembers();
+    showInlineAlert(document.querySelector('#admin-alert'), `${member.full_name || 'The member'} was removed.`, 'success');
+  } catch (error) {
+    showInlineAlert(document.querySelector('#admin-alert'), error.message || 'The member could not be removed.');
+  }
+}
+
 function bindActions() {
   document.querySelectorAll('[data-status]').forEach((button) => button.addEventListener('click', () => changeStatus(button.dataset.memberId, button.dataset.status)));
   document.querySelectorAll('[data-role-select]').forEach((select) => select.addEventListener('change', () => changeRole(select.dataset.roleSelect, select.value)));
+  document.querySelectorAll('[data-remove-member]').forEach((button) => button.addEventListener('click', () => removeMemberAccount(button.dataset.removeMember)));
 }
 
 function bindEpisodeForm() {

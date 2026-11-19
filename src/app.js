@@ -1,4 +1,3 @@
-import { APP_CONFIG } from './config.js';
 import { getIdentityDetails, getSession, onAuthChange, signInWithGoogle, signOut } from './auth.js';
 import { bootstrapAdmin, getEpisode, getMyProfile, listEpisodes } from './supabase.js';
 import { EPISODE_CONTENT, parseEpisodeBody } from './content.js';
@@ -84,7 +83,11 @@ async function hydrateApp(session) {
   state.session = session; state.user = session.user;
   showApp();
   try {
-    if (session.user.email?.toLowerCase() === APP_CONFIG.bootstrapEmail) await bootstrapAdmin();
+    try {
+      await bootstrapAdmin();
+    } catch {
+      // Non-bootstrap users are expected to be rejected by the database function.
+    }
     state.profile = await getMyProfile(session.user.id);
     if (!state.profile) throw new Error('Your profile is still being created. Please refresh in a moment.');
     renderProfileHeader({ ...state.profile, email: state.user.email || state.profile.email, avatar_url: state.profile.avatar_url || getIdentityDetails(state.user).avatarUrl });
